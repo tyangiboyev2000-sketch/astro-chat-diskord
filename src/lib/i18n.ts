@@ -29,9 +29,19 @@ type Dict = {
   topic: string;
   today: string;
   join: string;
+  leave: string;
+  connected: string;
   muted: string;
   emptyChat: string;
+  noResults: string;
+  searchResults: string;
+  clear: string;
+  close: string;
+  notifications: string;
+  compactMode: string;
+  you: string;
 };
+
 
 export const translations: Record<Lang, Dict> = {
   uz: {
