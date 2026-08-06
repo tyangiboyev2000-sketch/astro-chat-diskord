@@ -81,10 +81,10 @@ function App() {
 
   return (
     <LangContext.Provider value={{ lang, setLang, t }}>
-      <div className="relative flex h-screen w-full overflow-hidden text-foreground">
+      <div className="relative flex h-screen w-full gap-2 overflow-hidden p-2 text-foreground">
         <SpaceBackground />
         {/* Server rail */}
-        <nav aria-label={t.servers} className="glass-panel-strong relative z-10 flex w-[72px] shrink-0 flex-col items-center gap-3 border-r border-border/60 py-4">
+        <nav aria-label={t.servers} className="glass-panel-strong relative z-10 flex w-[68px] shrink-0 flex-col items-center gap-3 rounded-2xl border border-border/50 py-4">
           {servers.map((s, i) => (
             <button
               key={s.id}
@@ -99,7 +99,7 @@ function App() {
         </nav>
 
         {/* Channel sidebar */}
-        <aside className="glass-panel relative z-10 flex w-60 shrink-0 flex-col border-r border-border/60 text-sidebar-foreground">
+        <aside className="glass-panel relative z-10 flex w-60 shrink-0 flex-col overflow-hidden rounded-2xl border border-border/50 text-sidebar-foreground">
           <div className="text-crisp flex h-14 items-center border-b border-sidebar-border/70 px-4 text-base font-semibold">
             {t.appName}
           </div>
@@ -150,7 +150,7 @@ function App() {
         </aside>
 
         {/* Main */}
-        <main className="glass-panel relative z-10 flex min-w-0 flex-1 flex-col">
+        <main className="glass-panel relative z-10 flex min-w-0 flex-1 flex-col overflow-hidden rounded-2xl border border-border/50">
           <header className="flex h-14 items-center gap-3 border-b border-border px-4">
             <Hash className="h-5 w-5 text-muted-foreground" />
             <h1 className="text-crisp text-base font-semibold">{activeName}</h1>
