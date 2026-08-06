@@ -29,9 +29,19 @@ type Dict = {
   topic: string;
   today: string;
   join: string;
+  leave: string;
+  connected: string;
   muted: string;
   emptyChat: string;
+  noResults: string;
+  searchResults: string;
+  clear: string;
+  close: string;
+  notifications: string;
+  compactMode: string;
+  you: string;
 };
+
 
 export const translations: Record<Lang, Dict> = {
   uz: {
@@ -57,6 +67,15 @@ export const translations: Record<Lang, Dict> = {
     join: "Qo'shilish",
     muted: "Ovozsiz",
     emptyChat: "Hali xabar yo'q. Birinchi bo'lib yozing!",
+    leave: "Chiqish",
+    connected: "Ulandingiz",
+    noResults: "Hech narsa topilmadi",
+    searchResults: "Qidiruv natijalari",
+    clear: "Tozalash",
+    close: "Yopish",
+    notifications: "Bildirishnomalar",
+    compactMode: "Ixcham ko'rinish",
+    you: "Siz",
   },
   ru: {
     appName: "Чат",
@@ -81,6 +100,15 @@ export const translations: Record<Lang, Dict> = {
     join: "Присоединиться",
     muted: "Без звука",
     emptyChat: "Сообщений пока нет. Напишите первым!",
+    leave: "Выйти",
+    connected: "Подключено",
+    noResults: "Ничего не найдено",
+    searchResults: "Результаты поиска",
+    clear: "Очистить",
+    close: "Закрыть",
+    notifications: "Уведомления",
+    compactMode: "Компактный режим",
+    you: "Вы",
   },
   en: {
     appName: "Chat",
@@ -105,6 +133,15 @@ export const translations: Record<Lang, Dict> = {
     join: "Join",
     muted: "Muted",
     emptyChat: "No messages yet. Be the first to write!",
+    leave: "Leave",
+    connected: "Connected",
+    noResults: "Nothing found",
+    searchResults: "Search results",
+    clear: "Clear",
+    close: "Close",
+    notifications: "Notifications",
+    compactMode: "Compact mode",
+    you: "You",
   },
 };
 
