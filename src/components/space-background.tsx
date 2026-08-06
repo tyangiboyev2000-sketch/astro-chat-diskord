@@ -50,7 +50,7 @@ function StarLayer({
             top: `${s.y}%`,
             width: `${s.size}px`,
             height: `${s.size}px`,
-            boxShadow: `0 0 ${s.size * 3}px currentColor`,
+            boxShadow: `0 0 ${s.size * 4}px oklch(0.95 0.03 240 / 0.9)`,
             animation: `star-twinkle ${s.dur}s ease-in-out ${s.delay}s infinite`,
           }}
         />
@@ -82,7 +82,7 @@ export function SpaceBackground() {
             "radial-gradient(45% 35% at 78% 72%, oklch(0.55 0.15 190 / 0.35), transparent 70%), radial-gradient(40% 30% at 15% 85%, oklch(0.5 0.16 300 / 0.3), transparent 70%)",
         }}
       />
-      <StarLayer count={90} seed={1} maxSize={1.4} duration={200} opacity={0.55} />
+      <StarLayer count={90} seed={1} maxSize={1.4} duration={200} opacity={0.8} />
       <StarLayer count={55} seed={40} maxSize={2.2} duration={130} opacity={0.8} />
       <StarLayer count={25} seed={90} maxSize={3} duration={90} opacity={1} />
       {shooters.map((s, i) => (
