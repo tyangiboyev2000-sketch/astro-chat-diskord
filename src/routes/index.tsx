@@ -188,8 +188,8 @@ function App() {
     s2: "frontend",
     s3: "playlists",
   });
-  const active = activeByServer[serverId] ?? server.text[0].key;
-  const activeChannel = server.text.find((c) => c.key === active) ?? server.text[0];
+  const active = activeByServer[serverId] ?? server.text[0]!.key;
+  const activeChannel = server.text.find((c) => c.key === active) ?? server.text[0]!;
 
   const [store, setStore] = useState<Record<string, Msg[]>>(seed);
   const [draft, setDraft] = useState("");
