@@ -155,7 +155,7 @@
 }
 
 :root {
-  --glass: oklch(0.22 0.03 268 / 0.62);
+  --glass: oklch(0.22 0.03 268 / 0.5);
   --glass-strong: oklch(0.17 0.03 268 / 0.72);
   --space-deep: oklch(0.16 0.035 275);
 }
