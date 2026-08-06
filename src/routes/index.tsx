@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { LangContext, LANGS, translations, type Lang } from "@/lib/i18n";
+import { SpaceBackground } from "@/components/space-background";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -80,13 +81,14 @@ function App() {
 
   return (
     <LangContext.Provider value={{ lang, setLang, t }}>
-      <div className="flex h-screen w-full overflow-hidden bg-background text-foreground">
+      <div className="relative flex h-screen w-full overflow-hidden text-foreground">
+        <SpaceBackground />
         {/* Server rail */}
-        <nav aria-label={t.servers} className="flex w-[72px] shrink-0 flex-col items-center gap-3 bg-rail py-4">
+        <nav aria-label={t.servers} className="glass-panel-strong flex w-[72px] shrink-0 flex-col items-center gap-3 border-r border-border/60 py-4">
           {servers.map((s, i) => (
             <button
               key={s.id}
-              className={`flex h-12 w-12 items-center justify-center rounded-2xl text-sm font-bold transition-all hover:rounded-xl ${s.color} ${i === 0 ? "ring-2 ring-primary/60 ring-offset-2 ring-offset-rail" : "opacity-80 hover:opacity-100"}`}
+              className={`flex h-12 w-12 items-center justify-center rounded-2xl text-sm font-bold transition-all hover:rounded-xl ${s.color} ${i === 0 ? "ring-2 ring-primary/60 ring-offset-2 ring-offset-transparent" : "opacity-80 hover:opacity-100"}`}
             >
               {s.short}
             </button>
@@ -97,8 +99,8 @@ function App() {
         </nav>
 
         {/* Channel sidebar */}
-        <aside className="flex w-60 shrink-0 flex-col bg-sidebar text-sidebar-foreground">
-          <div className="flex h-14 items-center border-b border-sidebar-border px-4 text-base font-semibold">
+        <aside className="glass-panel flex w-60 shrink-0 flex-col border-r border-border/60 text-sidebar-foreground">
+          <div className="text-crisp flex h-14 items-center border-b border-sidebar-border/70 px-4 text-base font-semibold">
             {t.appName}
           </div>
           <ScrollArea className="flex-1 px-2 py-4">
@@ -148,10 +150,10 @@ function App() {
         </aside>
 
         {/* Main */}
-        <main className="flex min-w-0 flex-1 flex-col">
+        <main className="glass-panel flex min-w-0 flex-1 flex-col">
           <header className="flex h-14 items-center gap-3 border-b border-border px-4">
             <Hash className="h-5 w-5 text-muted-foreground" />
-            <h1 className="text-base font-semibold">{activeName}</h1>
+            <h1 className="text-crisp text-base font-semibold">{activeName}</h1>
             <span className="hidden truncate border-l border-border pl-3 text-sm text-muted-foreground md:block">
               {t.topic}
             </span>
@@ -197,10 +199,10 @@ function App() {
                   </span>
                   <div className="min-w-0">
                     <p className="flex items-baseline gap-2">
-                      <span className="text-sm font-semibold">{m.author}</span>
+                      <span className="text-crisp text-sm font-semibold">{m.author}</span>
                       <span className="text-xs text-muted-foreground">{m.time}</span>
                     </p>
-                    <p className="text-[15px] leading-relaxed text-foreground/90">{m.body[lang]}</p>
+                    <p className="text-crisp text-[15px] leading-relaxed text-foreground">{m.body[lang]}</p>
                   </div>
                 </article>
               ))}
@@ -211,10 +213,10 @@ function App() {
                   </span>
                   <div className="min-w-0">
                     <p className="flex items-baseline gap-2">
-                      <span className="text-sm font-semibold">Aziza</span>
+                      <span className="text-crisp text-sm font-semibold">Aziza</span>
                       <span className="text-xs text-muted-foreground">{m.time}</span>
                     </p>
-                    <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-foreground/90">
+                    <p className="text-crisp whitespace-pre-wrap text-[15px] leading-relaxed text-foreground">
                       {m.text}
                     </p>
                   </div>
