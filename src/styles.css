@@ -146,3 +146,75 @@
     color: var(--color-foreground);
   }
 }
+
+/* ── Space background + glass panels ───────────────────────────── */
+
+@theme inline {
+  --color-glass: var(--glass);
+  --color-glass-strong: var(--glass-strong);
+}
+
+:root {
+  --glass: oklch(0.24 0.03 265 / 0.7);
+  --glass-strong: oklch(0.19 0.03 265 / 0.78);
+  --space-deep: oklch(0.16 0.035 275);
+}
+
+@utility glass-panel {
+  background-color: var(--glass);
+  backdrop-filter: blur(12px) saturate(130%);
+}
+
+@utility glass-panel-strong {
+  background-color: var(--glass-strong);
+  backdrop-filter: blur(14px) saturate(130%);
+}
+
+@utility text-crisp {
+  text-shadow: 0 1px 2px oklch(0.12 0.03 275 / 0.85);
+}
+
+@keyframes star-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-400px, -300px, 0);
+  }
+}
+
+@keyframes star-twinkle {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes shooting-star {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(18deg) scaleX(0.2);
+  }
+  8% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+    transform: translate3d(90vw, 42vh, 0) rotate(18deg) scaleX(1);
+  }
+  75%,
+  100% {
+    opacity: 0;
+    transform: translate3d(115vw, 54vh, 0) rotate(18deg) scaleX(0.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .space-layer,
+  .shooting-star {
+    animation: none !important;
+  }
+}
