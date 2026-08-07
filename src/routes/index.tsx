@@ -370,8 +370,9 @@ function App() {
             </button>
           ))}
           <button
-            onClick={() => setSettingsOpen(true)}
-            aria-label={t.settings}
+            onClick={() => setServerDialogOpen(true)}
+            aria-label={t.addServer}
+            title={t.addServer}
             className="flex h-12 w-12 items-center justify-center rounded-2xl border border-dashed border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
           >
             <Plus className="h-5 w-5" />
