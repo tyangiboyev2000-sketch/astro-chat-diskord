@@ -54,11 +54,20 @@ type Server = {
   text: Channel[];
   voice: Channel[];
 };
-type Msg = { id: number; author: string; initials: string; time: string; body: L10n };
+type Msg = {
+  id: number;
+  author: string;
+  initials: string;
+  time: string;
+  body: L10n;
+  reactions?: Record<string, number>;
+};
 
 const tri = (uz: string, ru: string, en: string): L10n => ({ uz, ru, en });
 
-const servers: Server[] = [
+const REACTIONS = ["👍", "❤️", "😂", "🔥"];
+
+const initialServers: Server[] = [
   {
     id: "s1",
     short: "UZ",
