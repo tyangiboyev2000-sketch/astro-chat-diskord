@@ -384,9 +384,22 @@ function App() {
             {server.name[lang]}
           </div>
           <ScrollArea className="flex-1 px-2 py-4">
-            <p className="px-2 pb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {t.textChannels}
-            </p>
+            <div className="flex items-center justify-between px-2 pb-2">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                {t.textChannels}
+              </p>
+              <button
+                onClick={() => {
+                  setChannelDraftName("");
+                  setChannelDialog("text");
+                }}
+                aria-label={t.addChannel}
+                title={t.addChannel}
+                className="text-muted-foreground transition-colors hover:text-primary"
+              >
+                <Plus className="h-4 w-4" />
+              </button>
+            </div>
             <ul className="space-y-0.5">
               {server.text.map((c) => (
                 <li key={c.key}>
