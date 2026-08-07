@@ -14,7 +14,160 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      channels: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          name_en: string
+          name_ru: string
+          name_uz: string
+          position: number
+          server_id: string
+          topic_en: string
+          topic_ru: string
+          topic_uz: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name_en: string
+          name_ru: string
+          name_uz: string
+          position?: number
+          server_id: string
+          topic_en?: string
+          topic_ru?: string
+          topic_uz?: string
+          type?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name_en?: string
+          name_ru?: string
+          name_uz?: string
+          position?: number
+          server_id?: string
+          topic_en?: string
+          topic_ru?: string
+          topic_uz?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "channels_server_id_fkey"
+            columns: ["server_id"]
+            isOneToOne: false
+            referencedRelation: "servers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          author: string
+          body: string
+          channel_id: string
+          created_at: string
+          id: string
+          initials: string
+          reactions: Json
+          user_id: string | null
+        }
+        Insert: {
+          author: string
+          body: string
+          channel_id: string
+          created_at?: string
+          id?: string
+          initials?: string
+          reactions?: Json
+          user_id?: string | null
+        }
+        Update: {
+          author?: string
+          body?: string
+          channel_id?: string
+          created_at?: string
+          id?: string
+          initials?: string
+          reactions?: Json
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "channels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          color: string
+          created_at: string
+          id: string
+          initials: string
+          username: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          id: string
+          initials?: string
+          username: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          id?: string
+          initials?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      servers: {
+        Row: {
+          color: string
+          created_at: string
+          id: string
+          name_en: string
+          name_ru: string
+          name_uz: string
+          owner_id: string | null
+          position: number
+          short: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          id?: string
+          name_en: string
+          name_ru: string
+          name_uz: string
+          owner_id?: string | null
+          position?: number
+          short: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          id?: string
+          name_en?: string
+          name_ru?: string
+          name_uz?: string
+          owner_id?: string | null
+          position?: number
+          short?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
