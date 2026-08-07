@@ -256,7 +256,7 @@ function App() {
       short: (serverDraftIcon.trim() || name).slice(0, 2).toUpperCase(),
       name: tri(name, name, name),
       color: palette[servers.length % palette.length]!,
-      text: [{ key, name: tri("general", "общий", "general"), topic: tri("", "", "") }],
+      text: [{ key, name: tri("umumiy", "общий", "general"), topic: tri("", "", "") }],
       voice: [],
     };
     setServers((list) => [...list, newServer]);
