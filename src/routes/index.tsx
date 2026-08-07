@@ -477,9 +477,9 @@ function App() {
         <main className="glass-panel relative z-10 flex min-w-0 flex-1 flex-col overflow-hidden rounded-2xl border border-border/50">
           <header className="flex h-14 items-center gap-3 border-b border-border px-4">
             <Hash className="h-5 w-5 text-muted-foreground" />
-            <h1 className="text-crisp text-base font-semibold">{activeChannel.name[lang]}</h1>
+            <h1 className="text-crisp text-base font-semibold">{activeChannel?.name[lang] ?? ""}</h1>
             <span className="hidden truncate border-l border-border pl-3 text-sm text-muted-foreground md:block">
-              {activeChannel.topic[lang]}
+              {activeChannel?.topic[lang] ?? ""}
             </span>
             <div className="ml-auto flex items-center gap-2">
               <div className="relative hidden sm:block">
