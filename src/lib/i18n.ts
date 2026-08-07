@@ -40,6 +40,23 @@ type Dict = {
   notifications: string;
   compactMode: string;
   you: string;
+  createChannel: string;
+  createServer: string;
+  addChannel: string;
+  addServer: string;
+  channelName: string;
+  channelNamePlaceholder: string;
+  channelType: string;
+  textType: string;
+  voiceType: string;
+  serverName: string;
+  serverNamePlaceholder: string;
+  serverIcon: string;
+  serverIconHint: string;
+  create: string;
+  cancel: string;
+  deleteMessage: string;
+  reactions: string;
 };
 
 
