@@ -605,7 +605,7 @@ function App() {
             <Input
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
-              placeholder={t.messagePlaceholder.replace("{channel}", activeChannel.name[lang])}
+              placeholder={t.messagePlaceholder.replace("{channel}", activeChannel?.name[lang] ?? "")}
               className="h-11"
             />
             <Button type="submit" className="h-11" disabled={!draft.trim()}>
