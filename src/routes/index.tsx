@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Hash, Volume2, Send, Settings, Search, Users, Plus, X, PhoneOff } from "lucide-react";
+import { Hash, Volume2, Send, Settings, Search, Users, Plus, X, PhoneOff, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -54,11 +54,20 @@ type Server = {
   text: Channel[];
   voice: Channel[];
 };
-type Msg = { id: number; author: string; initials: string; time: string; body: L10n };
+type Msg = {
+  id: number;
+  author: string;
+  initials: string;
+  time: string;
+  body: L10n;
+  reactions?: Record<string, number>;
+};
 
 const tri = (uz: string, ru: string, en: string): L10n => ({ uz, ru, en });
 
-const servers: Server[] = [
+const REACTIONS = ["👍", "❤️", "😂", "🔥"];
+
+const initialServers: Server[] = [
   {
     id: "s1",
     short: "UZ",
@@ -181,15 +190,16 @@ function App() {
   const [lang, setLang] = useState<Lang>("uz");
   const t = translations[lang];
 
+  const [servers, setServers] = useState<Server[]>(initialServers);
   const [serverId, setServerId] = useState("s1");
-  const server = servers.find((s) => s.id === serverId)!;
+  const server = servers.find((s) => s.id === serverId) ?? servers[0]!;
   const [activeByServer, setActiveByServer] = useState<Record<string, string>>({
     s1: "general",
     s2: "frontend",
     s3: "playlists",
   });
-  const active = activeByServer[serverId] ?? server.text[0]!.key;
-  const activeChannel = server.text.find((c) => c.key === active) ?? server.text[0]!;
+  const active = activeByServer[server.id] ?? server.text[0]?.key ?? "";
+  const activeChannel = server.text.find((c) => c.key === active) ?? server.text[0];
 
   const [store, setStore] = useState<Record<string, Msg[]>>(seed);
   const [draft, setDraft] = useState("");
@@ -199,6 +209,101 @@ function App() {
   const [notifications, setNotifications] = useState(true);
   const [compact, setCompact] = useState(false);
   const [voice, setVoice] = useState<string | null>(null);
+
+  const [channelDialog, setChannelDialog] = useState<null | "text" | "voice">(null);
+  const [channelDraftName, setChannelDraftName] = useState("");
+  const [serverDialogOpen, setServerDialogOpen] = useState(false);
+  const [serverDraftName, setServerDraftName] = useState("");
+  const [serverDraftIcon, setServerDraftIcon] = useState("");
+
+  const createChannel = (e: React.FormEvent) => {
+    e.preventDefault();
+    const name = channelDraftName.trim();
+    if (!name || !channelDialog) return;
+    const key = `${name.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`;
+    const channel: Channel = { key, name: tri(name, name, name), topic: tri("", "", "") };
+    const type = channelDialog;
+    setServers((list) =>
+      list.map((s) =>
+        s.id === server.id
+          ? type === "text"
+            ? { ...s, text: [...s.text, channel] }
+            : { ...s, voice: [...s.voice, channel] }
+          : s,
+      ),
+    );
+    if (type === "text") {
+      setStore((st) => ({ ...st, [key]: [] }));
+      setActiveByServer((s) => ({ ...s, [server.id]: key }));
+    }
+    setChannelDraftName("");
+    setChannelDialog(null);
+  };
+
+  const createServer = (e: React.FormEvent) => {
+    e.preventDefault();
+    const name = serverDraftName.trim();
+    if (!name) return;
+    const id = `s-${Date.now()}`;
+    const key = `${name.toLowerCase().replace(/\s+/g, "-")}-general-${Date.now()}`;
+    const palette = [
+      "bg-primary text-primary-foreground",
+      "bg-accent text-accent-foreground",
+      "bg-secondary text-secondary-foreground",
+    ];
+    const newServer: Server = {
+      id,
+      short: (serverDraftIcon.trim() || name).slice(0, 2).toUpperCase(),
+      name: tri(name, name, name),
+      color: palette[servers.length % palette.length]!,
+      text: [{ key, name: tri("umumiy", "общий", "general"), topic: tri("", "", "") }],
+      voice: [],
+    };
+    setServers((list) => [...list, newServer]);
+    setStore((st) => ({ ...st, [key]: [] }));
+    setActiveByServer((s) => ({ ...s, [id]: key }));
+    setServerId(id);
+    setServerDraftName("");
+    setServerDraftIcon("");
+    setServerDialogOpen(false);
+    setQuery("");
+  };
+
+  const toggleReaction = (msgId: number, emoji: string) => {
+    setStore((st) => ({
+      ...st,
+      [active]: (st[active] ?? []).map((m) =>
+        m.id === msgId
+          ? {
+              ...m,
+              reactions: {
+                ...m.reactions,
+                [emoji]: ((m.reactions?.[emoji] ?? 0) + 1) % 3 || 1,
+              },
+            }
+          : m,
+      ),
+    }));
+  };
+
+  const removeReaction = (msgId: number, emoji: string) => {
+    setStore((st) => ({
+      ...st,
+      [active]: (st[active] ?? []).map((m) => {
+        if (m.id !== msgId) return m;
+        const next = { ...(m.reactions ?? {}) };
+        const count = (next[emoji] ?? 0) - 1;
+        if (count <= 0) delete next[emoji];
+        else next[emoji] = count;
+        return { ...m, reactions: next };
+      }),
+    }));
+  };
+
+  const deleteMessage = (msgId: number) => {
+    setStore((st) => ({ ...st, [active]: (st[active] ?? []).filter((m) => m.id !== msgId) }));
+  };
+
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const channelMessages = store[active] ?? [];
@@ -265,8 +370,9 @@ function App() {
             </button>
           ))}
           <button
-            onClick={() => setSettingsOpen(true)}
-            aria-label={t.settings}
+            onClick={() => setServerDialogOpen(true)}
+            aria-label={t.addServer}
+            title={t.addServer}
             className="flex h-12 w-12 items-center justify-center rounded-2xl border border-dashed border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
           >
             <Plus className="h-5 w-5" />
@@ -279,9 +385,22 @@ function App() {
             {server.name[lang]}
           </div>
           <ScrollArea className="flex-1 px-2 py-4">
-            <p className="px-2 pb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {t.textChannels}
-            </p>
+            <div className="flex items-center justify-between px-2 pb-2">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                {t.textChannels}
+              </p>
+              <button
+                onClick={() => {
+                  setChannelDraftName("");
+                  setChannelDialog("text");
+                }}
+                aria-label={t.addChannel}
+                title={t.addChannel}
+                className="text-muted-foreground transition-colors hover:text-primary"
+              >
+                <Plus className="h-4 w-4" />
+              </button>
+            </div>
             <ul className="space-y-0.5">
               {server.text.map((c) => (
                 <li key={c.key}>
@@ -304,9 +423,22 @@ function App() {
                 </li>
               ))}
             </ul>
-            <p className="px-2 pb-2 pt-5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {t.voiceChannels}
-            </p>
+            <div className="flex items-center justify-between px-2 pb-2 pt-5">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                {t.voiceChannels}
+              </p>
+              <button
+                onClick={() => {
+                  setChannelDraftName("");
+                  setChannelDialog("voice");
+                }}
+                aria-label={t.addChannel}
+                title={t.addChannel}
+                className="text-muted-foreground transition-colors hover:text-primary"
+              >
+                <Plus className="h-4 w-4" />
+              </button>
+            </div>
             <ul className="space-y-0.5">
               {server.voice.map((c) => {
                 const joined = voice === c.key;
@@ -372,9 +504,9 @@ function App() {
         <main className="glass-panel relative z-10 flex min-w-0 flex-1 flex-col overflow-hidden rounded-2xl border border-border/50">
           <header className="flex h-14 items-center gap-3 border-b border-border px-4">
             <Hash className="h-5 w-5 text-muted-foreground" />
-            <h1 className="text-crisp text-base font-semibold">{activeChannel.name[lang]}</h1>
+            <h1 className="text-crisp text-base font-semibold">{activeChannel?.name[lang] ?? ""}</h1>
             <span className="hidden truncate border-l border-border pl-3 text-sm text-muted-foreground md:block">
-              {activeChannel.topic[lang]}
+              {activeChannel?.topic[lang] ?? ""}
             </span>
             <div className="ml-auto flex items-center gap-2">
               <div className="relative hidden sm:block">
@@ -439,7 +571,7 @@ function App() {
                   </p>
                 )}
                 {visible.map((m) => (
-                  <article key={m.id} className="flex gap-3">
+                  <article key={m.id} className="group relative flex gap-3">
                     <span
                       className={`mt-0.5 flex shrink-0 items-center justify-center rounded-full text-xs font-bold ${
                         compact ? "h-7 w-7" : "h-10 w-10"
@@ -451,7 +583,7 @@ function App() {
                     >
                       {m.initials}
                     </span>
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <p className="flex items-baseline gap-2">
                         <span className="text-crisp text-sm font-semibold">{m.author}</span>
                         <span className="text-xs text-muted-foreground">{m.time}</span>
@@ -459,6 +591,41 @@ function App() {
                       <p className="text-crisp whitespace-pre-wrap text-[15px] leading-relaxed text-foreground">
                         {m.body[lang]}
                       </p>
+                      {m.reactions && Object.keys(m.reactions).length > 0 && (
+                        <div className="mt-1.5 flex flex-wrap gap-1.5" aria-label={t.reactions}>
+                          {Object.entries(m.reactions).map(([emoji, count]) => (
+                            <button
+                              key={emoji}
+                              onClick={() => removeReaction(m.id, emoji)}
+                              className="flex items-center gap-1 rounded-full border border-border bg-secondary/60 px-2 py-0.5 text-xs transition-colors hover:border-primary"
+                            >
+                              <span>{emoji}</span>
+                              <span className="text-muted-foreground">{count}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="glass-panel absolute -top-3 right-0 flex items-center gap-0.5 rounded-lg border border-border/60 p-1 opacity-0 shadow-sm transition-opacity focus-within:opacity-100 group-hover:opacity-100">
+                      {REACTIONS.map((emoji) => (
+                        <button
+                          key={emoji}
+                          onClick={() => toggleReaction(m.id, emoji)}
+                          aria-label={emoji}
+                          className="rounded-md px-1.5 py-0.5 text-sm transition-colors hover:bg-secondary"
+                        >
+                          {emoji}
+                        </button>
+                      ))}
+                      <button
+                        onClick={() => deleteMessage(m.id)}
+                        aria-label={t.deleteMessage}
+                        title={t.deleteMessage}
+                        className="rounded-md px-1.5 py-1 text-muted-foreground transition-colors hover:bg-destructive/15 hover:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
                     </div>
                   </article>
                 ))}
@@ -500,7 +667,7 @@ function App() {
             <Input
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
-              placeholder={t.messagePlaceholder.replace("{channel}", activeChannel.name[lang])}
+              placeholder={t.messagePlaceholder.replace("{channel}", activeChannel?.name[lang] ?? "")}
               className="h-11"
             />
             <Button type="submit" className="h-11" disabled={!draft.trim()}>
@@ -545,6 +712,114 @@ function App() {
                 {t.close}
               </Button>
             </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Create channel */}
+        <Dialog open={channelDialog !== null} onOpenChange={(o) => !o && setChannelDialog(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t.createChannel}</DialogTitle>
+              <DialogDescription>{server.name[lang]}</DialogDescription>
+            </DialogHeader>
+            <form onSubmit={createChannel} className="space-y-5">
+              <div>
+                <Label className="mb-2 block">{t.channelType}</Label>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant={channelDialog === "text" ? "default" : "secondary"}
+                    size="sm"
+                    onClick={() => setChannelDialog("text")}
+                  >
+                    <Hash className="mr-1 h-4 w-4" />
+                    {t.textType}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={channelDialog === "voice" ? "default" : "secondary"}
+                    size="sm"
+                    onClick={() => setChannelDialog("voice")}
+                  >
+                    <Volume2 className="mr-1 h-4 w-4" />
+                    {t.voiceType}
+                  </Button>
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="chname" className="mb-2 block">
+                  {t.channelName}
+                </Label>
+                <Input
+                  id="chname"
+                  autoFocus
+                  value={channelDraftName}
+                  onChange={(e) => setChannelDraftName(e.target.value)}
+                  placeholder={t.channelNamePlaceholder}
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button type="button" variant="secondary" onClick={() => setChannelDialog(null)}>
+                  {t.cancel}
+                </Button>
+                <Button type="submit" disabled={!channelDraftName.trim()}>
+                  {t.create}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Create server */}
+        <Dialog open={serverDialogOpen} onOpenChange={setServerDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t.createServer}</DialogTitle>
+              <DialogDescription>{t.appName}</DialogDescription>
+            </DialogHeader>
+            <form onSubmit={createServer} className="space-y-5">
+              <div>
+                <Label htmlFor="svname" className="mb-2 block">
+                  {t.serverName}
+                </Label>
+                <Input
+                  id="svname"
+                  autoFocus
+                  value={serverDraftName}
+                  onChange={(e) => setServerDraftName(e.target.value)}
+                  placeholder={t.serverNamePlaceholder}
+                />
+              </div>
+              <div className="flex items-end gap-3">
+                <div className="flex-1">
+                  <Label htmlFor="svicon" className="mb-2 block">
+                    {t.serverIcon}
+                  </Label>
+                  <Input
+                    id="svicon"
+                    maxLength={2}
+                    value={serverDraftIcon}
+                    onChange={(e) => setServerDraftIcon(e.target.value)}
+                    placeholder={t.serverIconHint}
+                  />
+                </div>
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary text-sm font-bold text-secondary-foreground">
+                  {(serverDraftIcon.trim() || serverDraftName || "?").slice(0, 2).toUpperCase()}
+                </span>
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => setServerDialogOpen(false)}
+                >
+                  {t.cancel}
+                </Button>
+                <Button type="submit" disabled={!serverDraftName.trim()}>
+                  {t.create}
+                </Button>
+              </div>
+            </form>
           </DialogContent>
         </Dialog>
       </div>

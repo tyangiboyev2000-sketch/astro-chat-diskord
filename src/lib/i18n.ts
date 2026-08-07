@@ -40,6 +40,23 @@ type Dict = {
   notifications: string;
   compactMode: string;
   you: string;
+  createChannel: string;
+  createServer: string;
+  addChannel: string;
+  addServer: string;
+  channelName: string;
+  channelNamePlaceholder: string;
+  channelType: string;
+  textType: string;
+  voiceType: string;
+  serverName: string;
+  serverNamePlaceholder: string;
+  serverIcon: string;
+  serverIconHint: string;
+  create: string;
+  cancel: string;
+  deleteMessage: string;
+  reactions: string;
 };
 
 
@@ -76,6 +93,23 @@ export const translations: Record<Lang, Dict> = {
     notifications: "Bildirishnomalar",
     compactMode: "Ixcham ko'rinish",
     you: "Siz",
+    createChannel: "Kanal yaratish",
+    createServer: "Server yaratish",
+    addChannel: "Kanal qo'shish",
+    addServer: "Server qo'shish",
+    channelName: "Kanal nomi",
+    channelNamePlaceholder: "yangi-kanal",
+    channelType: "Kanal turi",
+    textType: "Matnli",
+    voiceType: "Ovozli",
+    serverName: "Server nomi",
+    serverNamePlaceholder: "Mening serverim",
+    serverIcon: "Belgi",
+    serverIconHint: "2 tagacha belgi",
+    create: "Yaratish",
+    cancel: "Bekor qilish",
+    deleteMessage: "Xabarni o'chirish",
+    reactions: "Reaksiyalar",
   },
   ru: {
     appName: "Чат",
@@ -109,6 +143,23 @@ export const translations: Record<Lang, Dict> = {
     notifications: "Уведомления",
     compactMode: "Компактный режим",
     you: "Вы",
+    createChannel: "Создать канал",
+    createServer: "Создать сервер",
+    addChannel: "Добавить канал",
+    addServer: "Добавить сервер",
+    channelName: "Название канала",
+    channelNamePlaceholder: "новый-канал",
+    channelType: "Тип канала",
+    textType: "Текстовый",
+    voiceType: "Голосовой",
+    serverName: "Название сервера",
+    serverNamePlaceholder: "Мой сервер",
+    serverIcon: "Иконка",
+    serverIconHint: "До 2 символов",
+    create: "Создать",
+    cancel: "Отмена",
+    deleteMessage: "Удалить сообщение",
+    reactions: "Реакции",
   },
   en: {
     appName: "Chat",
@@ -142,6 +193,23 @@ export const translations: Record<Lang, Dict> = {
     notifications: "Notifications",
     compactMode: "Compact mode",
     you: "You",
+    createChannel: "Create channel",
+    createServer: "Create server",
+    addChannel: "Add channel",
+    addServer: "Add server",
+    channelName: "Channel name",
+    channelNamePlaceholder: "new-channel",
+    channelType: "Channel type",
+    textType: "Text",
+    voiceType: "Voice",
+    serverName: "Server name",
+    serverNamePlaceholder: "My server",
+    serverIcon: "Icon",
+    serverIconHint: "Up to 2 characters",
+    create: "Create",
+    cancel: "Cancel",
+    deleteMessage: "Delete message",
+    reactions: "Reactions",
   },
 };
 
