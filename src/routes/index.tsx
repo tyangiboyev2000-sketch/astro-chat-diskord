@@ -652,6 +652,114 @@ function App() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Create channel */}
+        <Dialog open={channelDialog !== null} onOpenChange={(o) => !o && setChannelDialog(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t.createChannel}</DialogTitle>
+              <DialogDescription>{server.name[lang]}</DialogDescription>
+            </DialogHeader>
+            <form onSubmit={createChannel} className="space-y-5">
+              <div>
+                <Label className="mb-2 block">{t.channelType}</Label>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant={channelDialog === "text" ? "default" : "secondary"}
+                    size="sm"
+                    onClick={() => setChannelDialog("text")}
+                  >
+                    <Hash className="mr-1 h-4 w-4" />
+                    {t.textType}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={channelDialog === "voice" ? "default" : "secondary"}
+                    size="sm"
+                    onClick={() => setChannelDialog("voice")}
+                  >
+                    <Volume2 className="mr-1 h-4 w-4" />
+                    {t.voiceType}
+                  </Button>
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="chname" className="mb-2 block">
+                  {t.channelName}
+                </Label>
+                <Input
+                  id="chname"
+                  autoFocus
+                  value={channelDraftName}
+                  onChange={(e) => setChannelDraftName(e.target.value)}
+                  placeholder={t.channelNamePlaceholder}
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button type="button" variant="secondary" onClick={() => setChannelDialog(null)}>
+                  {t.cancel}
+                </Button>
+                <Button type="submit" disabled={!channelDraftName.trim()}>
+                  {t.create}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Create server */}
+        <Dialog open={serverDialogOpen} onOpenChange={setServerDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t.createServer}</DialogTitle>
+              <DialogDescription>{t.appName}</DialogDescription>
+            </DialogHeader>
+            <form onSubmit={createServer} className="space-y-5">
+              <div>
+                <Label htmlFor="svname" className="mb-2 block">
+                  {t.serverName}
+                </Label>
+                <Input
+                  id="svname"
+                  autoFocus
+                  value={serverDraftName}
+                  onChange={(e) => setServerDraftName(e.target.value)}
+                  placeholder={t.serverNamePlaceholder}
+                />
+              </div>
+              <div className="flex items-end gap-3">
+                <div className="flex-1">
+                  <Label htmlFor="svicon" className="mb-2 block">
+                    {t.serverIcon}
+                  </Label>
+                  <Input
+                    id="svicon"
+                    maxLength={2}
+                    value={serverDraftIcon}
+                    onChange={(e) => setServerDraftIcon(e.target.value)}
+                    placeholder={t.serverIconHint}
+                  />
+                </div>
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary text-sm font-bold text-secondary-foreground">
+                  {(serverDraftIcon.trim() || serverDraftName || "?").slice(0, 2).toUpperCase()}
+                </span>
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => setServerDialogOpen(false)}
+                >
+                  {t.cancel}
+                </Button>
+                <Button type="submit" disabled={!serverDraftName.trim()}>
+                  {t.create}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
     </LangContext.Provider>
   );
