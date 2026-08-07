@@ -2,6 +2,8 @@ import { createContext, useContext } from "react";
 
 export type Lang = "uz" | "ru" | "en";
 
+export const APP_NAME = "AstroChat";
+
 export const LANGS: { code: Lang; label: string; flag: string }[] = [
   { code: "uz", label: "O'zbekcha", flag: "🇺🇿" },
   { code: "ru", label: "Русский", flag: "🇷🇺" },
@@ -10,14 +12,10 @@ export const LANGS: { code: Lang; label: string; flag: string }[] = [
 
 type Dict = {
   appName: string;
+  tagline: string;
   servers: string;
   textChannels: string;
   voiceChannels: string;
-  general: string;
-  announcements: string;
-  help: string;
-  lounge: string;
-  music: string;
   members: string;
   online: string;
   offline: string;
@@ -26,12 +24,10 @@ type Dict = {
   settings: string;
   language: string;
   search: string;
-  topic: string;
   today: string;
   join: string;
   leave: string;
   connected: string;
-  muted: string;
   emptyChat: string;
   noResults: string;
   searchResults: string;
@@ -57,20 +53,34 @@ type Dict = {
   cancel: string;
   deleteMessage: string;
   reactions: string;
+  loading: string;
+  // auth
+  signIn: string;
+  signUp: string;
+  signOut: string;
+  email: string;
+  password: string;
+  displayName: string;
+  displayNamePlaceholder: string;
+  continueWithGoogle: string;
+  orContinueWith: string;
+  noAccount: string;
+  haveAccount: string;
+  checkEmail: string;
+  authWelcome: string;
+  authSubtitle: string;
+  profile: string;
 };
 
+const dict = (d: Dict) => d;
 
 export const translations: Record<Lang, Dict> = {
-  uz: {
-    appName: "Suhbat",
+  uz: dict({
+    appName: APP_NAME,
+    tagline: "Yulduzlar ostidagi suhbat",
     servers: "Serverlar",
     textChannels: "Matnli kanallar",
     voiceChannels: "Ovozli kanallar",
-    general: "umumiy",
-    announcements: "elonlar",
-    help: "yordam",
-    lounge: "Dam olish xonasi",
-    music: "Musiqa",
     members: "A'zolar",
     online: "Onlayn",
     offline: "Oflayn",
@@ -79,13 +89,11 @@ export const translations: Record<Lang, Dict> = {
     settings: "Sozlamalar",
     language: "Til",
     search: "Qidirish",
-    topic: "Jamoa uchun umumiy suhbat kanali",
-    today: "Bugun",
+    today: "Xabarlar",
     join: "Qo'shilish",
-    muted: "Ovozsiz",
-    emptyChat: "Hali xabar yo'q. Birinchi bo'lib yozing!",
     leave: "Chiqish",
     connected: "Ulandingiz",
+    emptyChat: "Hali xabar yo'q. Birinchi bo'lib yozing!",
     noResults: "Hech narsa topilmadi",
     searchResults: "Qidiruv natijalari",
     clear: "Tozalash",
@@ -110,17 +118,29 @@ export const translations: Record<Lang, Dict> = {
     cancel: "Bekor qilish",
     deleteMessage: "Xabarni o'chirish",
     reactions: "Reaksiyalar",
-  },
-  ru: {
-    appName: "Чат",
+    loading: "Yuklanmoqda...",
+    signIn: "Kirish",
+    signUp: "Ro'yxatdan o'tish",
+    signOut: "Chiqish",
+    email: "Elektron pochta",
+    password: "Parol",
+    displayName: "Ismingiz",
+    displayNamePlaceholder: "Aziza",
+    continueWithGoogle: "Google orqali davom etish",
+    orContinueWith: "yoki pochta orqali",
+    noAccount: "Hisobingiz yo'qmi?",
+    haveAccount: "Hisobingiz bormi?",
+    checkEmail: "Pochtangizni tekshiring va havolani tasdiqlang.",
+    authWelcome: "AstroChat'ga xush kelibsiz",
+    authSubtitle: "Kosmik jamoaviy suhbat — UZ, RU va EN tillarida.",
+    profile: "Profil",
+  }),
+  ru: dict({
+    appName: APP_NAME,
+    tagline: "Общение под звёздами",
     servers: "Серверы",
     textChannels: "Текстовые каналы",
     voiceChannels: "Голосовые каналы",
-    general: "общий",
-    announcements: "объявления",
-    help: "помощь",
-    lounge: "Комната отдыха",
-    music: "Музыка",
     members: "Участники",
     online: "В сети",
     offline: "Не в сети",
@@ -129,13 +149,11 @@ export const translations: Record<Lang, Dict> = {
     settings: "Настройки",
     language: "Язык",
     search: "Поиск",
-    topic: "Общий канал для всей команды",
-    today: "Сегодня",
+    today: "Сообщения",
     join: "Присоединиться",
-    muted: "Без звука",
-    emptyChat: "Сообщений пока нет. Напишите первым!",
     leave: "Выйти",
     connected: "Подключено",
+    emptyChat: "Сообщений пока нет. Напишите первым!",
     noResults: "Ничего не найдено",
     searchResults: "Результаты поиска",
     clear: "Очистить",
@@ -160,17 +178,29 @@ export const translations: Record<Lang, Dict> = {
     cancel: "Отмена",
     deleteMessage: "Удалить сообщение",
     reactions: "Реакции",
-  },
-  en: {
-    appName: "Chat",
+    loading: "Загрузка...",
+    signIn: "Войти",
+    signUp: "Регистрация",
+    signOut: "Выйти",
+    email: "Электронная почта",
+    password: "Пароль",
+    displayName: "Ваше имя",
+    displayNamePlaceholder: "Дмитрий",
+    continueWithGoogle: "Продолжить с Google",
+    orContinueWith: "или по почте",
+    noAccount: "Нет аккаунта?",
+    haveAccount: "Уже есть аккаунт?",
+    checkEmail: "Проверьте почту и подтвердите ссылку.",
+    authWelcome: "Добро пожаловать в AstroChat",
+    authSubtitle: "Космический командный чат — на UZ, RU и EN.",
+    profile: "Профиль",
+  }),
+  en: dict({
+    appName: APP_NAME,
+    tagline: "Chat under the stars",
     servers: "Servers",
     textChannels: "Text channels",
     voiceChannels: "Voice channels",
-    general: "general",
-    announcements: "announcements",
-    help: "help",
-    lounge: "Lounge",
-    music: "Music",
     members: "Members",
     online: "Online",
     offline: "Offline",
@@ -179,13 +209,11 @@ export const translations: Record<Lang, Dict> = {
     settings: "Settings",
     language: "Language",
     search: "Search",
-    topic: "General channel for the whole team",
-    today: "Today",
+    today: "Messages",
     join: "Join",
-    muted: "Muted",
-    emptyChat: "No messages yet. Be the first to write!",
     leave: "Leave",
     connected: "Connected",
+    emptyChat: "No messages yet. Be the first to write!",
     noResults: "Nothing found",
     searchResults: "Search results",
     clear: "Clear",
@@ -210,7 +238,23 @@ export const translations: Record<Lang, Dict> = {
     cancel: "Cancel",
     deleteMessage: "Delete message",
     reactions: "Reactions",
-  },
+    loading: "Loading...",
+    signIn: "Sign in",
+    signUp: "Sign up",
+    signOut: "Sign out",
+    email: "Email",
+    password: "Password",
+    displayName: "Display name",
+    displayNamePlaceholder: "Sarah",
+    continueWithGoogle: "Continue with Google",
+    orContinueWith: "or with email",
+    noAccount: "No account yet?",
+    haveAccount: "Already have an account?",
+    checkEmail: "Check your inbox and confirm the link.",
+    authWelcome: "Welcome to AstroChat",
+    authSubtitle: "A cosmic team chat — in UZ, RU and EN.",
+    profile: "Profile",
+  }),
 };
 
 export const LangContext = createContext<{
