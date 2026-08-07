@@ -544,7 +544,7 @@ function App() {
                   </p>
                 )}
                 {visible.map((m) => (
-                  <article key={m.id} className="flex gap-3">
+                  <article key={m.id} className="group relative flex gap-3">
                     <span
                       className={`mt-0.5 flex shrink-0 items-center justify-center rounded-full text-xs font-bold ${
                         compact ? "h-7 w-7" : "h-10 w-10"
@@ -556,7 +556,7 @@ function App() {
                     >
                       {m.initials}
                     </span>
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <p className="flex items-baseline gap-2">
                         <span className="text-crisp text-sm font-semibold">{m.author}</span>
                         <span className="text-xs text-muted-foreground">{m.time}</span>
@@ -564,6 +564,41 @@ function App() {
                       <p className="text-crisp whitespace-pre-wrap text-[15px] leading-relaxed text-foreground">
                         {m.body[lang]}
                       </p>
+                      {m.reactions && Object.keys(m.reactions).length > 0 && (
+                        <div className="mt-1.5 flex flex-wrap gap-1.5" aria-label={t.reactions}>
+                          {Object.entries(m.reactions).map(([emoji, count]) => (
+                            <button
+                              key={emoji}
+                              onClick={() => removeReaction(m.id, emoji)}
+                              className="flex items-center gap-1 rounded-full border border-border bg-secondary/60 px-2 py-0.5 text-xs transition-colors hover:border-primary"
+                            >
+                              <span>{emoji}</span>
+                              <span className="text-muted-foreground">{count}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="glass-panel absolute -top-3 right-0 flex items-center gap-0.5 rounded-lg border border-border/60 p-1 opacity-0 shadow-sm transition-opacity focus-within:opacity-100 group-hover:opacity-100">
+                      {REACTIONS.map((emoji) => (
+                        <button
+                          key={emoji}
+                          onClick={() => toggleReaction(m.id, emoji)}
+                          aria-label={emoji}
+                          className="rounded-md px-1.5 py-0.5 text-sm transition-colors hover:bg-secondary"
+                        >
+                          {emoji}
+                        </button>
+                      ))}
+                      <button
+                        onClick={() => deleteMessage(m.id)}
+                        aria-label={t.deleteMessage}
+                        title={t.deleteMessage}
+                        className="rounded-md px-1.5 py-1 text-muted-foreground transition-colors hover:bg-destructive/15 hover:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
                     </div>
                   </article>
                 ))}
