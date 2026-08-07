@@ -409,9 +409,22 @@ function App() {
                 </li>
               ))}
             </ul>
-            <p className="px-2 pb-2 pt-5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {t.voiceChannels}
-            </p>
+            <div className="flex items-center justify-between px-2 pb-2 pt-5">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                {t.voiceChannels}
+              </p>
+              <button
+                onClick={() => {
+                  setChannelDraftName("");
+                  setChannelDialog("voice");
+                }}
+                aria-label={t.addChannel}
+                title={t.addChannel}
+                className="text-muted-foreground transition-colors hover:text-primary"
+              >
+                <Plus className="h-4 w-4" />
+              </button>
+            </div>
             <ul className="space-y-0.5">
               {server.voice.map((c) => {
                 const joined = voice === c.key;
