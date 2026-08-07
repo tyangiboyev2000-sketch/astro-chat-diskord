@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Hash, Volume2, Send, Settings, Search, Users, Plus, X, PhoneOff } from "lucide-react";
+import { Hash, Volume2, Send, Settings, Search, Users, Plus, X, PhoneOff, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
