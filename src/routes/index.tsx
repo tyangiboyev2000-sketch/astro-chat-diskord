@@ -190,15 +190,16 @@ function App() {
   const [lang, setLang] = useState<Lang>("uz");
   const t = translations[lang];
 
+  const [servers, setServers] = useState<Server[]>(initialServers);
   const [serverId, setServerId] = useState("s1");
-  const server = servers.find((s) => s.id === serverId)!;
+  const server = servers.find((s) => s.id === serverId) ?? servers[0]!;
   const [activeByServer, setActiveByServer] = useState<Record<string, string>>({
     s1: "general",
     s2: "frontend",
     s3: "playlists",
   });
-  const active = activeByServer[serverId] ?? server.text[0]!.key;
-  const activeChannel = server.text.find((c) => c.key === active) ?? server.text[0]!;
+  const active = activeByServer[server.id] ?? server.text[0]?.key ?? "";
+  const activeChannel = server.text.find((c) => c.key === active) ?? server.text[0];
 
   const [store, setStore] = useState<Record<string, Msg[]>>(seed);
   const [draft, setDraft] = useState("");
@@ -208,6 +209,101 @@ function App() {
   const [notifications, setNotifications] = useState(true);
   const [compact, setCompact] = useState(false);
   const [voice, setVoice] = useState<string | null>(null);
+
+  const [channelDialog, setChannelDialog] = useState<null | "text" | "voice">(null);
+  const [channelDraftName, setChannelDraftName] = useState("");
+  const [serverDialogOpen, setServerDialogOpen] = useState(false);
+  const [serverDraftName, setServerDraftName] = useState("");
+  const [serverDraftIcon, setServerDraftIcon] = useState("");
+
+  const createChannel = (e: React.FormEvent) => {
+    e.preventDefault();
+    const name = channelDraftName.trim();
+    if (!name || !channelDialog) return;
+    const key = `${name.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`;
+    const channel: Channel = { key, name: tri(name, name, name), topic: tri("", "", "") };
+    const type = channelDialog;
+    setServers((list) =>
+      list.map((s) =>
+        s.id === server.id
+          ? type === "text"
+            ? { ...s, text: [...s.text, channel] }
+            : { ...s, voice: [...s.voice, channel] }
+          : s,
+      ),
+    );
+    if (type === "text") {
+      setStore((st) => ({ ...st, [key]: [] }));
+      setActiveByServer((s) => ({ ...s, [server.id]: key }));
+    }
+    setChannelDraftName("");
+    setChannelDialog(null);
+  };
+
+  const createServer = (e: React.FormEvent) => {
+    e.preventDefault();
+    const name = serverDraftName.trim();
+    if (!name) return;
+    const id = `s-${Date.now()}`;
+    const key = `${name.toLowerCase().replace(/\s+/g, "-")}-general-${Date.now()}`;
+    const palette = [
+      "bg-primary text-primary-foreground",
+      "bg-accent text-accent-foreground",
+      "bg-secondary text-secondary-foreground",
+    ];
+    const newServer: Server = {
+      id,
+      short: (serverDraftIcon.trim() || name).slice(0, 2).toUpperCase(),
+      name: tri(name, name, name),
+      color: palette[servers.length % palette.length]!,
+      text: [{ key, name: tri("general", "общий", "general"), topic: tri("", "", "") }],
+      voice: [],
+    };
+    setServers((list) => [...list, newServer]);
+    setStore((st) => ({ ...st, [key]: [] }));
+    setActiveByServer((s) => ({ ...s, [id]: key }));
+    setServerId(id);
+    setServerDraftName("");
+    setServerDraftIcon("");
+    setServerDialogOpen(false);
+    setQuery("");
+  };
+
+  const toggleReaction = (msgId: number, emoji: string) => {
+    setStore((st) => ({
+      ...st,
+      [active]: (st[active] ?? []).map((m) =>
+        m.id === msgId
+          ? {
+              ...m,
+              reactions: {
+                ...m.reactions,
+                [emoji]: ((m.reactions?.[emoji] ?? 0) + 1) % 3 || 1,
+              },
+            }
+          : m,
+      ),
+    }));
+  };
+
+  const removeReaction = (msgId: number, emoji: string) => {
+    setStore((st) => ({
+      ...st,
+      [active]: (st[active] ?? []).map((m) => {
+        if (m.id !== msgId) return m;
+        const next = { ...(m.reactions ?? {}) };
+        const count = (next[emoji] ?? 0) - 1;
+        if (count <= 0) delete next[emoji];
+        else next[emoji] = count;
+        return { ...m, reactions: next };
+      }),
+    }));
+  };
+
+  const deleteMessage = (msgId: number) => {
+    setStore((st) => ({ ...st, [active]: (st[active] ?? []).filter((m) => m.id !== msgId) }));
+  };
+
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const channelMessages = store[active] ?? [];
