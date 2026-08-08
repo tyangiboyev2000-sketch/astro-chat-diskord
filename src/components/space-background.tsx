@@ -44,14 +44,14 @@ export function SpaceBackground() {
       canvas.height = Math.floor(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      const count = Math.min(420, Math.floor((w * h) / 3200));
+      const count = Math.min(650, Math.floor((w * h) / 2000));
       stars = Array.from({ length: count }, () => {
         const big = Math.random() > 0.93;
         return {
           x: Math.random() * w,
           y: Math.random() * h,
           r: big ? 1.4 + Math.random() * 1.6 : 0.3 + Math.random() * 0.9,
-          base: 0.35 + Math.random() * 0.6,
+          base: 0.5 + Math.random() * 0.5,
           speed: 0.0006 + Math.random() * 0.0022,
           phase: Math.random() * Math.PI * 2,
           hue: Math.random() > 0.7 ? (Math.random() > 0.5 ? 275 : 195) : 220,
@@ -70,8 +70,8 @@ export function SpaceBackground() {
         const cy = cl.y * h;
         const rad = cl.r * Math.max(w, h) * 0.6;
         const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad);
-        g.addColorStop(0, `rgba(${cl.c},0.16)`);
-        g.addColorStop(0.5, `rgba(${cl.c},0.06)`);
+        g.addColorStop(0, `rgba(${cl.c},0.26)`);
+        g.addColorStop(0.5, `rgba(${cl.c},0.1)`);
         g.addColorStop(1, "rgba(0,0,0,0)");
         ctx.fillStyle = g;
         ctx.fillRect(0, 0, w, h);
