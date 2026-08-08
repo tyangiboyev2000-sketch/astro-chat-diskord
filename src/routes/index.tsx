@@ -711,14 +711,19 @@ function Workspace({
                   const online = onlineIds.includes(p.id);
                   return (
                     <li key={p.id} className="flex items-center gap-2">
-                      <span
-                        className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
-                          online
-                            ? "bg-secondary text-secondary-foreground"
-                            : "bg-muted text-muted-foreground"
-                        }`}
-                      >
-                        {p.initials}
+                      <span className="relative">
+                        <span
+                          className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
+                            online
+                              ? "bg-secondary text-secondary-foreground"
+                              : "bg-muted text-muted-foreground"
+                          }`}
+                        >
+                          {p.initials}
+                        </span>
+                        {online && (
+                          <span className="status-glow absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border border-background bg-primary" />
+                        )}
                       </span>
                       <div className="min-w-0">
                         <p className="truncate text-sm">{p.id === user.id ? t.you : p.username}</p>
@@ -726,6 +731,7 @@ function Workspace({
                           {online ? t.online : t.offline}
                         </p>
                       </div>
+
                     </li>
                   );
                 })}
