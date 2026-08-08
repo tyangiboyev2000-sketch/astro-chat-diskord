@@ -173,7 +173,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      set_message_reactions: {
+        Args: { _message_id: string; _reactions: Json }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
