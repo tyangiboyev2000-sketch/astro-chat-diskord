@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Rocket, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -52,19 +52,40 @@ export function AuthScreen() {
     }
   };
 
+  // Dev-only mock "Google" sign-in: no external popup, no OAuth redirect.
+  // Signs into (or creates) a deterministic demo account.
   const google = async () => {
     setBusy(true);
     setError(null);
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-    });
-    if (result.error) {
-      setError(String(result.error));
+    setInfo(null);
+    const demoEmail = "demo.google@astro.chat";
+    const demoPassword = "astrochat-demo-2024";
+    try {
+      const first = await supabase.auth.signInWithPassword({
+        email: demoEmail,
+        password: demoPassword,
+      });
+      if (first.error) {
+        const { error } = await supabase.auth.signUp({
+          email: demoEmail,
+          password: demoPassword,
+          options: {
+            emailRedirectTo: window.location.origin,
+            data: { username: "Demo Astronaut" },
+          },
+        });
+        if (error) throw error;
+        const retry = await supabase.auth.signInWithPassword({
+          email: demoEmail,
+          password: demoPassword,
+        });
+        if (retry.error) throw retry.error;
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
       setBusy(false);
-      return;
     }
-    if (result.redirected) return;
-    setBusy(false);
   };
 
   return (
