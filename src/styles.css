@@ -147,7 +147,7 @@
   }
 }
 
-/* ── Space background + glass panels ───────────────────────────── */
+/* ── Space background + ultra glassmorphism ────────────────────── */
 
 @theme inline {
   --color-glass: var(--glass);
@@ -155,60 +155,104 @@
 }
 
 :root {
-  --glass: oklch(0.22 0.03 268 / 0.5);
-  --glass-strong: oklch(0.17 0.03 268 / 0.72);
+  --glass: rgba(10, 15, 30, 0.45);
+  --glass-strong: rgba(8, 12, 26, 0.55);
+  --glass-stroke: rgba(255, 255, 255, 0.1);
+  --neon-cyan: oklch(0.85 0.15 195);
+  --neon-violet: oklch(0.7 0.22 300);
   --space-deep: oklch(0.16 0.035 275);
 }
 
 @utility glass-panel {
   background-color: var(--glass);
-  backdrop-filter: blur(12px) saturate(130%);
+  backdrop-filter: blur(25px) saturate(150%);
+  border: 1px solid var(--glass-stroke);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 12px 40px rgba(0, 0, 0, 0.45);
 }
 
 @utility glass-panel-strong {
   background-color: var(--glass-strong);
-  backdrop-filter: blur(14px) saturate(130%);
+  backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid var(--glass-stroke);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 12px 40px rgba(0, 0, 0, 0.5);
 }
 
 @utility text-crisp {
-  text-shadow: 0 1px 2px oklch(0.12 0.03 275 / 0.85);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
-@keyframes star-drift {
+/* Global readability over the starfield */
+@utility crisp-scope {
+  & :where(p, span, h1, h2, h3, h4, li, label, button, input, textarea, time, a) {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  }
+}
+
+@utility logo-glow {
+  background: linear-gradient(
+    100deg,
+    oklch(0.9 0.06 230),
+    oklch(0.78 0.19 285),
+    oklch(0.85 0.15 195),
+    oklch(0.9 0.06 230)
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 10px oklch(0.7 0.2 285 / 0.65));
+  animation: logo-shimmer 6s linear infinite;
+}
+
+@utility neon-active {
+  border: 1px solid oklch(0.85 0.15 195 / 0.55);
+  box-shadow:
+    0 0 0 1px oklch(0.7 0.22 300 / 0.25),
+    0 0 14px oklch(0.85 0.15 195 / 0.35),
+    inset 0 0 12px oklch(0.7 0.22 300 / 0.18);
+}
+
+@utility neon-hover {
+  transition:
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+  &:hover {
+    box-shadow:
+      0 0 16px oklch(0.85 0.15 195 / 0.5),
+      0 0 32px oklch(0.7 0.22 300 / 0.35);
+    transform: translateY(-1px);
+  }
+}
+
+@utility status-glow {
+  box-shadow: 0 0 0 0 oklch(0.82 0.17 165 / 0.7);
+  animation: status-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes logo-shimmer {
   from {
-    transform: translate3d(0, 0, 0);
+    background-position: 0% 50%;
   }
   to {
-    transform: translate3d(-400px, -300px, 0);
+    background-position: 300% 50%;
   }
 }
 
-@keyframes star-twinkle {
+@keyframes status-pulse {
   0%,
   100% {
-    opacity: 0.35;
+    box-shadow:
+      0 0 6px 1px oklch(0.82 0.17 165 / 0.8),
+      0 0 0 0 oklch(0.82 0.17 165 / 0.5);
   }
   50% {
-    opacity: 0.95;
-  }
-}
-
-@keyframes shooting-star {
-  0% {
-    opacity: 0;
-    transform: translate3d(0, 0, 0) rotate(18deg) scaleX(0.2);
-  }
-  8% {
-    opacity: 1;
-  }
-  60% {
-    opacity: 1;
-    transform: translate3d(90vw, 42vh, 0) rotate(18deg) scaleX(1);
-  }
-  75%,
-  100% {
-    opacity: 0;
-    transform: translate3d(115vw, 54vh, 0) rotate(18deg) scaleX(0.6);
+    box-shadow:
+      0 0 12px 3px oklch(0.82 0.17 165 / 0.95),
+      0 0 0 5px oklch(0.82 0.17 165 / 0);
   }
 }
 
@@ -218,3 +262,4 @@
     animation: none !important;
   }
 }
+
