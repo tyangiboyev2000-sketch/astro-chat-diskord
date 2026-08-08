@@ -309,7 +309,7 @@ function Workspace({
     if (count <= 0) delete next[emoji];
     else next[emoji] = count;
     setMessages((list) => list.map((x) => (x.id === m.id ? { ...x, reactions: next } : x)));
-    await supabase.from("messages").update({ reactions: next }).eq("id", m.id);
+    await supabase.rpc("set_message_reactions", { _message_id: m.id, _reactions: next });
   };
 
   const deleteMessage = async (id: string) => {
