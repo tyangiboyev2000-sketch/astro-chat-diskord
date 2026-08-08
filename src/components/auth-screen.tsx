@@ -111,14 +111,15 @@ export function AuthScreen() {
         </DropdownMenu>
       </div>
 
-      <section className="glass-panel-strong relative z-10 w-full max-w-md rounded-2xl border border-border/50 p-8">
+      <section className="glass-panel-strong crisp-scope relative z-10 w-full max-w-md rounded-2xl p-8">
         <div className="flex flex-col items-center text-center">
-          <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+          <span className="neon-active flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/20 text-primary">
             <Rocket className="h-7 w-7" />
           </span>
-          <h1 className="text-crisp mt-4 text-2xl font-bold tracking-tight">{t.authWelcome}</h1>
-          <p className="text-crisp mt-1 text-sm text-muted-foreground">{t.authSubtitle}</p>
+          <h1 className="logo-glow mt-4 text-2xl font-bold tracking-tight">{t.authWelcome}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{t.authSubtitle}</p>
         </div>
+
 
         <Button
           type="button"

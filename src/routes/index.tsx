@@ -390,20 +390,21 @@ function Workspace({
     new Date(iso).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
 
   return (
-    <div className="relative flex h-screen w-full gap-2 overflow-hidden p-2 text-foreground">
+    <div className="crisp-scope relative flex h-screen w-full gap-2 overflow-hidden p-2 text-foreground">
       <SpaceBackground />
 
       {/* Server rail */}
       <nav
         aria-label={t.servers}
-        className="glass-panel-strong relative z-10 flex w-[68px] shrink-0 flex-col items-center gap-3 rounded-2xl border border-border/50 py-4"
+        className="glass-panel-strong relative z-10 flex w-[68px] shrink-0 flex-col items-center gap-3 rounded-2xl py-4"
       >
         <span
           title={APP_NAME}
-          className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/20 text-primary ring-1 ring-primary/40"
+          className="neon-active flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/15 text-primary"
         >
           <Rocket className="h-5 w-5" />
         </span>
+
         <span className="h-px w-8 bg-border" />
         {servers.map((s) => (
           <button
@@ -414,11 +415,12 @@ function Workspace({
             }}
             title={nameOf(s, lang)}
             aria-current={s.id === server?.id}
-            className={`flex h-12 w-12 items-center justify-center rounded-2xl text-sm font-bold transition-all hover:rounded-xl ${s.color} ${
+            className={`neon-hover flex h-12 w-12 items-center justify-center rounded-2xl text-sm font-bold transition-all hover:rounded-xl ${s.color} ${
               s.id === server?.id
-                ? "ring-2 ring-primary/60 ring-offset-2 ring-offset-transparent"
+                ? "neon-active"
                 : "opacity-70 hover:opacity-100"
             }`}
+
           >
             {s.short}
           </button>
@@ -427,16 +429,17 @@ function Workspace({
           onClick={() => setServerDialogOpen(true)}
           aria-label={t.addServer}
           title={t.addServer}
-          className="flex h-12 w-12 items-center justify-center rounded-2xl border border-dashed border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+          className="neon-hover flex h-12 w-12 items-center justify-center rounded-2xl border border-dashed border-white/20 text-muted-foreground transition-colors hover:border-primary hover:text-primary"
         >
           <Plus className="h-5 w-5" />
         </button>
       </nav>
 
       {/* Channel sidebar */}
-      <aside className="glass-panel relative z-10 flex w-60 shrink-0 flex-col overflow-hidden rounded-2xl border border-border/50 text-sidebar-foreground">
-        <div className="flex h-14 flex-col justify-center border-b border-sidebar-border/70 px-4">
-          <p className="text-crisp text-base font-semibold leading-tight">{APP_NAME}</p>
+      <aside className="glass-panel relative z-10 flex w-60 shrink-0 flex-col overflow-hidden rounded-2xl text-sidebar-foreground">
+        <div className="flex h-14 flex-col justify-center border-b border-white/10 px-4">
+          <p className="logo-glow text-base font-bold leading-tight tracking-wide">{APP_NAME}</p>
+
           <p className="truncate text-xs text-muted-foreground">
             {server ? nameOf(server, lang) : t.loading}
           </p>
@@ -466,11 +469,12 @@ function Workspace({
                     if (server) setActiveByServer((s) => ({ ...s, [server.id]: c.id }));
                     setQuery("");
                   }}
-                  className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors ${
+                  className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-all ${
                     activeChannel?.id === c.id
-                      ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground"
-                      : "text-muted-foreground hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
+                      ? "neon-active bg-white/10 font-medium text-foreground"
+                      : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
                   }`}
+
                 >
                   <Hash className="h-4 w-4 shrink-0" />
                   <span className="truncate">{nameOf(c, lang)}</span>
@@ -501,11 +505,12 @@ function Workspace({
                 <li key={c.id}>
                   <button
                     onClick={() => setVoice(joined ? null : c.id)}
-                    className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors ${
+                    className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-all ${
                       joined
-                        ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground"
-                        : "text-muted-foreground hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
+                        ? "neon-active bg-white/10 font-medium text-foreground"
+                        : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
                     }`}
+
                   >
                     <Volume2 className="h-4 w-4 shrink-0" />
                     <span className="truncate">{nameOf(c, lang)}</span>
@@ -518,8 +523,9 @@ function Workspace({
         </ScrollArea>
 
         {voice && (
-          <div className="flex items-center gap-2 border-t border-sidebar-border px-3 py-2 text-xs">
-            <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-primary" />
+          <div className="flex items-center gap-2 border-t border-white/10 px-3 py-2 text-xs">
+            <span className="status-glow h-2 w-2 shrink-0 rounded-full bg-primary" />
+
             <span className="truncate text-primary">
               {t.connected} · {voiceChannels.find((v) => v.id === voice)?.name_en ?? ""}
             </span>
@@ -535,13 +541,17 @@ function Workspace({
           </div>
         )}
 
-        <div className="flex items-center gap-2 border-t border-sidebar-border p-3">
+        <div className="flex items-center gap-2 border-t border-white/10 p-3">
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
             {me.initials}
           </span>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium">{me.username}</p>
-            <p className="text-xs text-primary">{t.online}</p>
+            <p className="flex items-center gap-1.5 text-xs text-primary">
+              <span className="status-glow h-1.5 w-1.5 rounded-full bg-primary" />
+              {t.online}
+            </p>
+
           </div>
           <Button
             variant="ghost"
@@ -555,8 +565,8 @@ function Workspace({
       </aside>
 
       {/* Main */}
-      <main className="glass-panel relative z-10 flex min-w-0 flex-1 flex-col overflow-hidden rounded-2xl border border-border/50">
-        <header className="flex h-14 items-center gap-3 border-b border-border px-4">
+      <main className="glass-panel relative z-10 flex min-w-0 flex-1 flex-col overflow-hidden rounded-2xl">
+        <header className="flex h-14 items-center gap-3 border-b border-white/10 px-4">
           <Hash className="h-5 w-5 text-muted-foreground" />
           <h1 className="text-crisp text-base font-semibold">
             {activeChannel ? nameOf(activeChannel, lang) : APP_NAME}
@@ -692,7 +702,7 @@ function Workspace({
           </ScrollArea>
 
           {showMembers && (
-            <aside className="hidden w-56 shrink-0 border-l border-border p-3 lg:block">
+            <aside className="hidden w-56 shrink-0 border-l border-white/10 p-3 lg:block">
               <p className="pb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 {t.members}
               </p>
@@ -701,14 +711,19 @@ function Workspace({
                   const online = onlineIds.includes(p.id);
                   return (
                     <li key={p.id} className="flex items-center gap-2">
-                      <span
-                        className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
-                          online
-                            ? "bg-secondary text-secondary-foreground"
-                            : "bg-muted text-muted-foreground"
-                        }`}
-                      >
-                        {p.initials}
+                      <span className="relative">
+                        <span
+                          className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
+                            online
+                              ? "bg-secondary text-secondary-foreground"
+                              : "bg-muted text-muted-foreground"
+                          }`}
+                        >
+                          {p.initials}
+                        </span>
+                        {online && (
+                          <span className="status-glow absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border border-background bg-primary" />
+                        )}
                       </span>
                       <div className="min-w-0">
                         <p className="truncate text-sm">{p.id === user.id ? t.you : p.username}</p>
@@ -716,6 +731,7 @@ function Workspace({
                           {online ? t.online : t.offline}
                         </p>
                       </div>
+
                     </li>
                   );
                 })}
@@ -724,7 +740,7 @@ function Workspace({
           )}
         </div>
 
-        <form onSubmit={send} className="flex items-center gap-2 border-t border-border p-4">
+        <form onSubmit={send} className="glass-panel flex items-center gap-2 rounded-b-2xl border-x-0 border-b-0 border-t border-t-white/10 p-4 shadow-none">
           <Input
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
@@ -744,7 +760,7 @@ function Workspace({
 
       {/* Settings */}
       <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
-        <DialogContent>
+        <DialogContent className="glass-panel-strong crisp-scope border-white/10">
           <DialogHeader>
             <DialogTitle>{t.settings}</DialogTitle>
             <DialogDescription>
@@ -791,7 +807,7 @@ function Workspace({
 
       {/* Create channel */}
       <Dialog open={channelDialog !== null} onOpenChange={(o) => !o && setChannelDialog(null)}>
-        <DialogContent>
+        <DialogContent className="glass-panel-strong crisp-scope border-white/10">
           <DialogHeader>
             <DialogTitle>{t.createChannel}</DialogTitle>
             <DialogDescription>{server ? nameOf(server, lang) : APP_NAME}</DialogDescription>
@@ -846,7 +862,7 @@ function Workspace({
 
       {/* Create server */}
       <Dialog open={serverDialogOpen} onOpenChange={setServerDialogOpen}>
-        <DialogContent>
+        <DialogContent className="glass-panel-strong crisp-scope border-white/10">
           <DialogHeader>
             <DialogTitle>{t.createServer}</DialogTitle>
             <DialogDescription>{APP_NAME}</DialogDescription>
