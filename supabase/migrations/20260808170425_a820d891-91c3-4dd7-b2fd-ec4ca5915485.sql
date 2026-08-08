@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.set_message_reactions(uuid, jsonb) FROM anon;
