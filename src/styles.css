@@ -187,7 +187,7 @@
 
 /* Global readability over the starfield */
 @utility crisp-scope {
-  & :where(p, span, h1, h2, h3, h4, li, label, button, input, textarea, time, a) {
+  & :where(p, span, h1, h2, h3, h4, li, label, button, input, textarea, time, a):not(.logo-glow) {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
   }
 }
