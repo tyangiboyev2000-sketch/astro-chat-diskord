@@ -565,8 +565,8 @@ function Workspace({
       </aside>
 
       {/* Main */}
-      <main className="glass-panel relative z-10 flex min-w-0 flex-1 flex-col overflow-hidden rounded-2xl border border-border/50">
-        <header className="flex h-14 items-center gap-3 border-b border-border px-4">
+      <main className="glass-panel relative z-10 flex min-w-0 flex-1 flex-col overflow-hidden rounded-2xl">
+        <header className="flex h-14 items-center gap-3 border-b border-white/10 px-4">
           <Hash className="h-5 w-5 text-muted-foreground" />
           <h1 className="text-crisp text-base font-semibold">
             {activeChannel ? nameOf(activeChannel, lang) : APP_NAME}
@@ -702,7 +702,7 @@ function Workspace({
           </ScrollArea>
 
           {showMembers && (
-            <aside className="hidden w-56 shrink-0 border-l border-border p-3 lg:block">
+            <aside className="hidden w-56 shrink-0 border-l border-white/10 p-3 lg:block">
               <p className="pb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 {t.members}
               </p>
@@ -734,7 +734,7 @@ function Workspace({
           )}
         </div>
 
-        <form onSubmit={send} className="flex items-center gap-2 border-t border-border p-4">
+        <form onSubmit={send} className="glass-panel flex items-center gap-2 rounded-b-2xl border-x-0 border-b-0 border-t border-t-white/10 p-4 shadow-none">
           <Input
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
@@ -754,7 +754,7 @@ function Workspace({
 
       {/* Settings */}
       <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
-        <DialogContent>
+        <DialogContent className="glass-panel-strong crisp-scope border-white/10">
           <DialogHeader>
             <DialogTitle>{t.settings}</DialogTitle>
             <DialogDescription>
@@ -801,7 +801,7 @@ function Workspace({
 
       {/* Create channel */}
       <Dialog open={channelDialog !== null} onOpenChange={(o) => !o && setChannelDialog(null)}>
-        <DialogContent>
+        <DialogContent className="glass-panel-strong crisp-scope border-white/10">
           <DialogHeader>
             <DialogTitle>{t.createChannel}</DialogTitle>
             <DialogDescription>{server ? nameOf(server, lang) : APP_NAME}</DialogDescription>
@@ -856,7 +856,7 @@ function Workspace({
 
       {/* Create server */}
       <Dialog open={serverDialogOpen} onOpenChange={setServerDialogOpen}>
-        <DialogContent>
+        <DialogContent className="glass-panel-strong crisp-scope border-white/10">
           <DialogHeader>
             <DialogTitle>{t.createServer}</DialogTitle>
             <DialogDescription>{APP_NAME}</DialogDescription>
