@@ -159,7 +159,7 @@ function App() {
 
   return (
     <LangContext.Provider value={{ lang, setLang, t }}>
-      <Workspace user={user} profile={profile} setProfile={setProfile} lang={lang} setLang={setLang} />
+      <Workspace key={user.id} user={user} profile={profile} setProfile={setProfile} lang={lang} setLang={setLang} />
     </LangContext.Provider>
   );
 }
