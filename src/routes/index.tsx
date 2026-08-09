@@ -116,16 +116,25 @@ function App() {
   const [profile, setProfile] = useState<ProfileRow | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setUser(data.session?.user ?? null);
-      setAuthReady(true);
-    });
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+    let alive = true;
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!alive) return;
       setUser(session?.user ?? null);
+      if (event === "SIGNED_OUT" || !session) setProfile(null);
       setAuthReady(true);
     });
-    return () => sub.subscription.unsubscribe();
+    supabase.auth.getUser().then(({ data }) => {
+      if (!alive) return;
+      setUser(data.user ?? null);
+      if (!data.user) setProfile(null);
+      setAuthReady(true);
+    });
+    return () => {
+      alive = false;
+      sub.subscription.unsubscribe();
+    };
   }, []);
+
 
   if (!authReady) {
     return (
@@ -150,7 +159,7 @@ function App() {
 
   return (
     <LangContext.Provider value={{ lang, setLang, t }}>
-      <Workspace user={user} profile={profile} setProfile={setProfile} lang={lang} setLang={setLang} />
+      <Workspace key={user.id} user={user} profile={profile} setProfile={setProfile} lang={lang} setLang={setLang} />
     </LangContext.Provider>
   );
 }
@@ -414,8 +423,16 @@ function Workspace({
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.removeAllChannels();
+    } catch {
+      /* ignore */
+    }
+    setProfile(null);
+    const { error } = await supabase.auth.signOut();
+    if (error) await supabase.auth.signOut({ scope: "local" });
   };
+
 
   const timeOf = (iso: string) =>
     new Date(iso).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
