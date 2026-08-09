@@ -232,8 +232,23 @@ function Workspace({
       .select("*")
       .eq("channel_id", channelId)
       .order("created_at");
-    setMessages((data ?? []) as MsgRow[]);
+    const rows = (data ?? []) as MsgRow[];
+    const ids = rows.map((r) => r.id);
+    let counts: Record<string, Record<string, number>> = {};
+    if (ids.length) {
+      const { data: reactionRows } = await supabase
+        .from("message_reactions")
+        .select("message_id, emoji, user_id")
+        .in("message_id", ids);
+      counts = (reactionRows ?? []).reduce<Record<string, Record<string, number>>>((acc, r) => {
+        const bucket = (acc[r.message_id] ??= {});
+        bucket[r.emoji] = (bucket[r.emoji] ?? 0) + 1;
+        return acc;
+      }, {});
+    }
+    setMessages(rows.map((r) => ({ ...r, reactions: counts[r.id] ?? {} })));
   }, []);
+
 
   useEffect(() => {
     if (activeChannel) void loadMessages(activeChannel.id);
