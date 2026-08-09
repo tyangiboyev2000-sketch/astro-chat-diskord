@@ -324,8 +324,24 @@ function Workspace({
     if (count <= 0) delete next[emoji];
     else next[emoji] = count;
     setMessages((list) => list.map((x) => (x.id === m.id ? { ...x, reactions: next } : x)));
-    await supabase.rpc("set_message_reactions", { _message_id: m.id, _reactions: next });
+    if (dir === 1) {
+      await supabase
+        .from("message_reactions")
+        .upsert(
+          { message_id: m.id, user_id: user.id, emoji },
+          { onConflict: "message_id,user_id,emoji" },
+        );
+    } else {
+      await supabase
+        .from("message_reactions")
+        .delete()
+        .eq("message_id", m.id)
+        .eq("user_id", user.id)
+        .eq("emoji", emoji);
+    }
+    if (activeChannel) void loadMessages(activeChannel.id);
   };
+
 
   const deleteMessage = async (id: string) => {
     setMessages((list) => list.filter((m) => m.id !== id));
