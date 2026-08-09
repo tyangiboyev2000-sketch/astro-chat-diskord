@@ -423,8 +423,16 @@ function Workspace({
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.removeAllChannels();
+    } catch {
+      /* ignore */
+    }
+    setProfile(null);
+    const { error } = await supabase.auth.signOut();
+    if (error) await supabase.auth.signOut({ scope: "local" });
   };
+
 
   const timeOf = (iso: string) =>
     new Date(iso).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
